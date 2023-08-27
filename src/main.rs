@@ -4,8 +4,12 @@ use std::fs::File;
 use std::io::prelude::*;
 
 fn make_git_request(){
+    let adding = Command::new("git")
+	.args(&["add","."])
+	.status()
+	.expect("Adding problem");
     let commit = Command::new("git")
-        .args(&["commit", "-a", "-m"])
+        .args(&["commit", "-m"])
         .status()
         .expect("Smth went wrong");
     if commit.success() {

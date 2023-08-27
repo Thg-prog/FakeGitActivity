@@ -9,7 +9,7 @@ fn make_git_request(){
 	.status()
 	.expect("Adding problem");
     let commit = Command::new("git")
-        .args(&["commit", "_-m"])
+        .args(&["commit", "-m", "New commit"])
         .status()
         .expect("Smth went wrong");
     if commit.success() {

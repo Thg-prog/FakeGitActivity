@@ -4,12 +4,13 @@ use std::fs::File;
 use std::io::prelude::*;
 
 fn make_git_request(){
+    let commit_message = format!("New commit added at {}",Local::now().format("%Y-%m-%d %H:%M:%S").to_string());
     let adding = Command::new("git")
 	.args(&["add","."])
 	.status()
 	.expect("Adding problem");
     let commit = Command::new("git")
-        .args(&["commit", "-m", "New commit"])
+        .args(&["commit", "-m", commit_message])
         .status()
         .expect("Smth went wrong");
     if commit.success() {

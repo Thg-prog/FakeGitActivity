@@ -1,5 +1,5 @@
 use chrono::prelude::*;
-use std::process::{Command, exit};
+use std::process::Command;
 use std::fs::File;
 use std::io::prelude::*;
 use tokio::fs;
@@ -65,7 +65,6 @@ async fn main() -> Result<(), std::io::Error>{
             }
             count_files = 0;
             println!("File_path remaked");
-            exit(0x0100);
         }
     }
 

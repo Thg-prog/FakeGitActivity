@@ -43,10 +43,8 @@ async fn make_files_path(folder_name: &str)->Result<(),std::io::Error>{
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error>{
-    let first_interval = Duration::from_secs(1);
+    let first_interval = Duration::from_secs(60);
     let mut ticker_files = interval(first_interval);
-    let second_interval = Duration::from_secs(5);
-    let mut ticker_git = interval(second_interval);
     let mut count_files = 0;
 
     loop {
@@ -57,6 +55,7 @@ async fn main() -> Result<(), std::io::Error>{
             eprintln!("An error occured: {}", e);
         }
         count_files+=1;
+        make_git_request();
         if count_files == 15{
             if let Err(e) = delete_files_path("files_src").await{
                 eprintln!("Error with deliting files path")
@@ -68,8 +67,6 @@ async fn main() -> Result<(), std::io::Error>{
             println!("File_path remaked");
             exit(0x0100);
         }
-
-            //make_git_request();
     }
 
 }

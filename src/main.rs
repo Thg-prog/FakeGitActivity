@@ -1,7 +1,8 @@
 use chrono::prelude::*;
-use std::process::Command;
+use std::process::{Command, exit};
 use std::fs::File;
 use std::io::prelude::*;
+use tokio::fs;
 use tokio::time::{Duration, interval};
 
 fn make_git_request(){
@@ -23,7 +24,7 @@ fn make_git_request(){
 }
 fn make_new_git_file()->std::io::Result<()>{
     let date =  Local::now().format("%Y%m%d%H%M%S").to_string();
-    let file_name = format!("{}.txt", date);
+    let file_name = format!("files_src\\{}.txt", date);
     let mut file = File::create(file_name.clone());
     println!("{}",file_name);
 
@@ -32,19 +33,43 @@ fn make_new_git_file()->std::io::Result<()>{
     Ok(())
 }
 
+async fn delete_files_path(folder_name: &str)->Result<(),std::io::Error>{
+    fs::remove_dir_all(folder_name).await
+}
+
+async fn make_files_path(folder_name: &str)->Result<(),std::io::Error>{
+    fs::create_dir(folder_name).await
+}
+
 #[tokio::main]
-async fn main() {
-    let first_interval = Duration::from_secs(30);
+async fn main() -> Result<(), std::io::Error>{
+    let first_interval = Duration::from_secs(1);
     let mut ticker_files = interval(first_interval);
     let second_interval = Duration::from_secs(5);
     let mut ticker_git = interval(second_interval);
+    let mut count_files = 0;
 
     loop {
         ticker_files.tick().await;
+
+
         if let Err(e) = make_new_git_file(){
             eprintln!("An error occured: {}", e);
         }
-    make_git_request();
+        count_files+=1;
+        if count_files == 15{
+            if let Err(e) = delete_files_path("files_src").await{
+                eprintln!("Error with deliting files path")
+            }
+            if let Err(e) = make_files_path("files_src").await{
+                eprintln!("Error with make files path");
+            }
+            count_files = 0;
+            println!("File_path remaked");
+            exit(0x0100);
+        }
+
+            //make_git_request();
     }
 
 }
